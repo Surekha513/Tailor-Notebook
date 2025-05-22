@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="/css/style.css">
+<div class="container mt-4">
+  <h2>Dashboard</h2>
+
+
+  <a href="/logout" class="btn btn-danger mb-3">Logout</a>
+
+  <form action="/dashboard/order" method="POST">
+    <input class="form-control mb-2" name="customerName" placeholder="Customer Name" required>
+    <select class="form-control mb-2" name="gender" id="gender" onchange="updateDressOptions()" required>
+      <option value="">Select Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+    </select>
+    <select class="form-control mb-2" name="dressType" id="dressType" required></select>
+    <input class="form-control mb-2" name="measurements[Chest]" placeholder="Bosom">
+    <input class="form-control mb-2" name="measurements[Waist]" placeholder="Waist ">
+    <input class="form-control mb-2" name="measurements[Waist]" placeholder="Shoulder width">
+    <input class="form-control mb-2" name="measurements[Waist]" placeholder="Sleeve length">
+    <input class="form-control mb-2" name="measurements[Waist]" placeholder="Hip">
+    <input class="form-control mb-2" name="status" value="Pending">
+    <button class="btn btn-primary">Add Order</button>
+  </form>
+
+  <hr>
+
+  <h3>Orders</h3>
+  <ul class="list-group">
+    <% orders.forEach(order => { %>
+      <li class="list-group-item">
+        <b><%= order.customerName %></b> - <%= order.dressType %> - <%= order.status %>
+        <a href="/dashboard/edit/<%= order._id %>" class="btn btn-sm btn-warning">Edit</a>
+        <a href="/dashboard/delete/<%= order._id %>" class="btn btn-sm btn-danger">Delete</a>
+        <a href="/dashboard/pdf/<%= order._id %>" class="btn btn-sm btn-secondary">PDF</a>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<script>
+function updateDressOptions() {
+  const gender = document.getElementById('gender').value;
+  const dressType = document.getElementById('dressType');
+  dressType.innerHTML = '';
+  if (gender === 'Male') {
+    ['T-Shirt', 'Suit', 'Jeans', 'Jacket'].forEach(item => {
+      dressType.innerHTML += `<option>${item}</option>`;
+    });
+  } else if (gender === 'Female') {
+    ['Dress', 'Skirt', 'Blouse', 'Jacket'].forEach(item => {
+      dressType.innerHTML += `<option>${item}</option>`;
+    });
+  }
+}
+</script>
+<%- include('partials/footer') %>

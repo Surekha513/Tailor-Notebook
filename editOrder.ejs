@@ -1,0 +1,91 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="/css/style.css">
+
+<div class="container">
+  <h2 class="page-title">Edit Order</h2>
+
+  <form action="/dashboard/edit/<%= order._id %>" method="POST" class="styled-form">
+    
+    <!-- Customer Name -->
+    <label for="customerName">Customer Name:</label>
+    <input
+      type="text"
+      id="customerName"
+      name="customerName"
+      value="<%= order.customerName %>"
+      required
+    >
+
+    <!-- Gender -->
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" onchange="updateDressOptions()" required>
+      <option value="Male" <%= order.gender === 'Male' ? 'selected' : '' %>>Male</option>
+      <option value="Female" <%= order.gender === 'Female' ? 'selected' : '' %>>Female</option>
+    </select>
+
+    <!-- Dress Type -->
+    <label for="dressType">Dress Type:</label>
+    <select id="dressType" name="dressType" required></select>
+
+    <!-- Status -->
+    <label for="status">Status:</label>
+    <select id="status" name="status" required>
+      <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+      <option value="Completed" <%= order.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+    </select>
+
+    <!-- Measurements -->
+    <label>Measurements:</label>
+    <% for (let key in order.measurements) { %>
+      <input
+        type="text"
+        name="measurements[<%= key %>]"
+        placeholder="<%= key %>"
+        value="<%= order.measurements[key] %>"
+        required
+      >
+    <% } %>
+
+    <!-- Buttons -->
+    <div style="margin-top: 20px;">
+      <button type="submit" class="btn">Update Order</button>
+      <a href="/dashboard" class="btn secondary" role="button">Cancel</a>
+    </div>
+  </form>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const genderSelect = document.getElementById('gender');
+    const dressTypeSelect = document.getElementById('dressType');
+    const currentDress = "<%= order.dressType.replace(/"/g, '&quot;') %>";
+
+    const dressOptions = {
+      Male: ['T-Shirt', 'Suit', 'Jeans', 'Jacket'],
+      Female: ['Dress', 'Skirt', 'Blouse', 'Jacket']
+    };
+
+    function populateDressOptions(selectedGender) {
+      const options = dressOptions[selectedGender] || [];
+      dressTypeSelect.innerHTML = '';
+
+      options.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type;
+        if (type === currentDress) {
+          option.selected = true;
+        }
+        dressTypeSelect.appendChild(option);
+      });
+    }
+
+    // Initialize dress options on load
+    populateDressOptions(genderSelect.value);
+
+    // Update when gender changes
+    genderSelect.addEventListener('change', function () {
+      populateDressOptions(this.value);
+    });
+  });
+</script>
+

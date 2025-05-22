@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Orders - Tailor Notebook</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">Tailor Notebook</div>
+    <ul class="nav-links">
+      <li><a href="/auth/logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="dashboard">
+    <h2>Create New Order</h2>
+
+    <form action="/auth/orders" method="POST">
+      <select name="gender" id="gender" required onchange="updateDressOptions()">
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+
+      <select name="dressType" id="dressType" required>
+        <option value="">Select Dress Type</option>
+      </select>
+
+      <input type="text" name="customerName" placeholder="Customer Name" required>
+      <input type="text" name="measurement1" placeholder="Chest / Bust Size (inches)" required>
+      <input type="text" name="measurement2" placeholder="Waist Size (inches)" required>
+      <input type="text" name="measurement3" placeholder="Hip Size (inches)" required>
+      
+      <button type="submit">Create Order</button>
+    </form>
+
+    <h2>My Orders</h2>
+
+    <div class="orders-list">
+      <% orders.forEach(order => { %>
+        <div class="order-card">
+          <h3><%= order.customerName %> - <%= order.gender %> - <%= order.dressType %></h3>
+          <p><strong>Measurements:</strong></p>
+          <p>Measurement 1: <%= order.measurement1 %> inches</p>
+          <p>Measurement 2: <%= order.measurement2 %> inches</p>
+          <p>Measurement 3: <%= order.measurement3 %> inches</p>
+          <div class="order-actions">
+            <a href="/auth/edit-order/<%= order._id %>">Edit</a> |
+            <a href="/auth/delete-order/<%= order._id %>">Delete</a> |
+            <a href="/auth/order-pdf/<%= order._id %>">Download PDF</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <script>
+    function updateDressOptions() {
+      const gender = document.getElementById('gender').value;
+      const dressType = document.getElementById('dressType');
+      dressType.innerHTML = '<option value="">Select Dress Type</option>';
+
+      if (gender === 'Male') {
+        ['T-Shirt', 'Suit', 'Jeans', 'Jacket'].forEach(dress => {
+          const option = document.createElement('option');
+          option.value = dress;
+          option.text = dress;
+          dressType.appendChild(option);
+        });
+      } else if (gender === 'Female') {
+        ['Dress', 'Skirt', 'Blouse', 'Jacket'].forEach(dress => {
+          const option = document.createElement('option');
+          option.value = dress;
+          option.text = dress;
+          dressType.appendChild(option);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
